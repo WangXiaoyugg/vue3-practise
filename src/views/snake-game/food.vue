@@ -1,5 +1,5 @@
 <template>
-  <div class="food" :style="{'top': food[0]+'%', left: food[1]+'%'}"></div>
+  <div class="food" :style="{'left': food[0]+'%', 'top': food[1]+'%'}"></div>
 </template>
 
 <script>

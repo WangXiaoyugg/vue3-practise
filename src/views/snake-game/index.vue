@@ -29,6 +29,7 @@ export default {
   },
   setup() {
     const foodCoordinates = generateRandomCoordinates()
+    console.log(foodCoordinates);
     const body = ref([
       [0, 0],
       [2, 0],
@@ -82,6 +83,7 @@ export default {
     onUpdated(() => {
       checkCollideBorders()
       checkCollideSelf()
+      checkEatFood()
     })
     document.addEventListener('keydown', onKeyDown)
     setInterval(moveSnake, speed.value)
@@ -98,8 +100,29 @@ export default {
         onGameOver()
       }
     }
+    const checkEatFood = () => {
+      let head = body.value[body.value.length -1 ]
+      if (head[0] === food.value[0] && head[1] === food.value[1]) {
+        food.value = generateRandomCoordinates()
+        enlargeSnake()
+        increaseSpeed()
+      }
+    }
+    const enlargeSnake = () => {
+      let newBoby = [...body.value]
+      newBoby.unshift([])
+      body.value = newBoby
+      console.log('body:', body.value);
+    }
+    const increaseSpeed = () => {
+      if (speed.value > 10) {
+        speed.value -= 10;
+        console.log(speed.value)
+      }
+    }
+
     const onGameOver = () => {
-      alert(`Game is over, you get ${body.value[body.value.length]} score`)
+      alert(`Game is over, you get ${body.value.length} score`)
       resetGame()
     }
     const resetGame = () => {
