@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref, onMounted, onUpdated } from 'vue'
 import Snake from './snake.vue'
 import Food from './food.vue'
 
@@ -33,6 +33,7 @@ export default {
       [0, 0],
       [2, 0],
     ]);
+    const head = computed(() => body.value[body.value.length -1 ])
     const direction = ref('RIGHT');
     const food = ref(foodCoordinates);
     const speed = ref(200);
@@ -78,9 +79,38 @@ export default {
       originBody.shift()
       body.value = originBody
     }
+    onUpdated(() => {
+      checkCollideBorders()
+      checkCollideSelf()
+    })
     document.addEventListener('keydown', onKeyDown)
     setInterval(moveSnake, speed.value)
-
+    const checkCollideBorders = () => {
+      if (head.value[0] >=100 || head.value[0] < 0 || head.value[1] >= 100 || head.value[0] < 0) {
+        onGameOver()
+      }
+    }
+    const checkCollideSelf = () => {
+      let bodyCopy = [...body.value]
+      let head = bodyCopy.pop()
+      let exsitHead = bodyCopy.find(item => item[0] === head[0] && item[1] === head[1])
+      if (exsitHead) {
+        onGameOver()
+      }
+    }
+    const onGameOver = () => {
+      alert(`Game is over, you get ${body.value[body.value.length]} score`)
+      resetGame()
+    }
+    const resetGame = () => {
+      body.value= [
+        [0, 0],
+        [2, 0],
+      ]
+      direction.value = 'RIGHT'
+      food.value = foodCoordinates
+      speed.value = 200
+    }
   
     return {
       body,
